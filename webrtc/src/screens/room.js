@@ -7,3 +7,5 @@ const RoomPage=()=>{
         </div>
     )
 }
+
+export default RoomPage
