@@ -48,3 +48,37 @@ In summary, this code sets up a Socket.IO context in React, allowing components 
 If you don't use the useMemo hook in this context, the io("localhost:8000", []) 
 would be called on every render of the SocketProvider component. This could potentially lead to unnecessary recreation of the socket instance even when its dependencies haven't changed. The useMemo hook is utilized here to memoize the socket instance creation, 
 ensuring that it only recreates the socket when the dependencies change.
+
+
+/// day 2 ///////
+
+Certainly! The provided code snippet is using the `useCallback` hook in a React component to memoize the `handleJoinRoom` function. Let's break down the code:
+
+```jsx
+const handleJoinRoom = useCallback(
+    (data) => {
+        const { email, room } = data;
+        naviagte(`/room/${room}`);
+    },
+    [naviagte]
+);
+```
+
+1. **`handleJoinRoom` Function:**
+   - This is a function called `handleJoinRoom` that takes a `data` parameter. It appears to be related to joining a room.
+   - Inside the function, it extracts `email` and `room` from the `data` object.
+
+2. **`useCallback` Hook:**
+   - `useCallback` is a hook in React that is used to memoize functions. Memoization ensures that the function is only recreated if its dependencies change.
+   - In this case, the dependencies array is `[naviagte]`. This means that the `handleJoinRoom` function will only be recreated if the `naviagte` function changes.
+
+3. **Navigation Using `naviagte`:**
+   - Inside the `handleJoinRoom` function, there is a navigation logic using the `naviagte` function.
+   - It navigates to a specific room by constructing a URL path with the room parameter obtained from the `data` object.
+
+4. **Dependencies Array:**
+   - The dependencies array `[naviagte]` is provided as the second argument to `useCallback`. This array specifies which values or functions, when changed, should trigger the recreation of the `handleJoinRoom` function.
+   - In this case, the `handleJoinRoom` function will be recreated only if the `naviagte` function changes.
+
+5. **Overall Purpose:**
+   - The purpose of using `useCallback` in this context is to ensure that the `handleJoinRoom` function is not recreated on every render unless the `naviagte` function changes. This can be beneficial for performance optimization, especially when passing this function as a prop to child components, as it avoids unnecessary re-renders in those components.

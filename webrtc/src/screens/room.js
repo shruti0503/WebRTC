@@ -1,5 +1,17 @@
-import react from 'react'
+import react, { useCallback } from 'react'
+import {useNavigate} from 'react-router-dom'
 const RoomPage=()=>{
+
+    const naviagte=useNavigate();
+
+    const handleJoinRoom=useCallback(
+        (data)=>{
+            const {email,room}=data;
+            naviagte(`/room/${room}`)
+        },[naviagte]
+    )
+
+    
 
     return(
         <div>
