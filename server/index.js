@@ -24,4 +24,7 @@ io.on('connection', (socket)=>{
         socket.join(room)
         socket.to('room:join', data)
     })
+    socket.on('user:call',({to, offer})=>{
+        io.to(to).emit('incoming:call', {from:socket.id, offer})
+    })
 })
