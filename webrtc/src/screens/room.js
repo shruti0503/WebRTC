@@ -9,12 +9,23 @@ const RoomPage=()=>{
 
     const socket=useSocket();
     const [remoteSocketId, setRemoteSocketId]=useState(null)
+
+
     const handleUSerJoined=useCallback(({email, id})=>{
         console.log(`email ${email} joined room`)
+        console.log("email id", remoteSocketId)
+    
         setRemoteSocketId(id)
     },[])
+
+    useEffect(()=>{
+        console.log("email id in useeff", remoteSocketId)
+
+    },[remoteSocketId])
+
    
     useEffect(()=>{
+        console.log("Setting up event listener for user:joined");
         socket.on("user:joined", handleUSerJoined);
         socket.on('incoming:call',handleIncomingCall)
 
@@ -39,7 +50,15 @@ const RoomPage=()=>{
     },[remoteSocketId, socket])
 
     const handleIncomingCall=useCallback( async({from, offer})=>{
+        setRemoteSocketId(from)
+        const stream=await navigator.mediaDevices.getUserMedia({
+            audio:true,
+            video:true
+        })
+        setMyStream(stream)
         console.log('incoming call', from , offer)
+        const ans=await peer.getAnswer(offer)
+        socket.emit('call:accepted',{from:socket.id, offer} )
 
     },[])
 

@@ -19,6 +19,7 @@ io.on('connection', (socket)=>{
         const {email, room}=data
         emailToSocketIdMap.set(email,socket.id)
         socketidToEmailMap.set(socket.id, email)
+        console.log("soxket id is :",socket.id)
         io.to(room).emit('user:joined',{email,id:socket.id})
 
         socket.join(room)
@@ -26,5 +27,9 @@ io.on('connection', (socket)=>{
     })
     socket.on('user:call',({to, offer})=>{
         io.to(to).emit('incoming:call', {from:socket.id, offer})
+    })
+
+    socket.on('call:accepted', ({to, ans})=>{
+        io.to(to).emit("call:accepted", {from:socket.id, ans})
     })
 })
