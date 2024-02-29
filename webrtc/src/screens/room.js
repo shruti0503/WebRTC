@@ -20,27 +20,19 @@ const RoomPage=()=>{
 
     useEffect(()=>{
         console.log("email id in useeff", remoteSocketId)
+     
 
     },[remoteSocketId])
+
+
     
     const  handleCallAccepted=useCallback(({from, ans})=>{
+        peer.setLocalDescription(ans)
+        console.log('Call Accepted!')
 
 
     },[])
-
-   
-    useEffect(()=>{
-        console.log("Setting up event listener for user:joined");
-        socket.on("user:joined", handleUSerJoined);
-        socket.on('incoming:call',handleIncomingCall)
-        socket.on('call:accepted', handleCallAccepted)
-
-        return ()=>{
-            socket.off("user:joined", handleUSerJoined)
-            socket.off("incoming:call", handleIncomingCall)
-            socket.off('call:accepted', handleCallAccepted)
-        }
-    }, [socket, handleUSerJoined])
+    
 
     const [stream, setMyStream]=useState(null);
 
@@ -49,6 +41,7 @@ const RoomPage=()=>{
             audio:true,
             video:true
         })
+       
 
         const offer=await peer.getOffer();
         // send this offer to other user
@@ -58,18 +51,31 @@ const RoomPage=()=>{
 
     const handleIncomingCall=useCallback( async({from, offer})=>{
         setRemoteSocketId(from)
+        console.log("incoming caal",from)
         const stream=await navigator.mediaDevices.getUserMedia({
             audio:true,
             video:true
         })
+     //   handleCallAccepted()
         setMyStream(stream)
         console.log('incoming call', from , offer)
         const ans=await peer.getAnswer(offer)
-        socket.emit('call:accepted',{from:socket.id, offer} )
+        socket.emit('call:accepted',{to:from, ans} )
 
-    },[])
+    },[remoteSocketId,socket])
 
+    useEffect(()=>{
+        console.log("Setting up event listener for user:joined");
+        socket.on("user:joined", handleUSerJoined);
+        socket.on("incomming:call",handleIncomingCall)
+        socket.on("call:accepted", handleCallAccepted)
 
+        return ()=>{
+            socket.off("user:joined", handleUSerJoined)
+            socket.off("incomming:call", handleIncomingCall)
+            socket.off("call:accepted", handleCallAccepted)
+        }
+    }, [socket, handleUSerJoined, handleIncomingCall,handleCallAccepted])
   
 
     
