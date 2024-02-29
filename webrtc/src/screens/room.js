@@ -22,16 +22,23 @@ const RoomPage=()=>{
         console.log("email id in useeff", remoteSocketId)
 
     },[remoteSocketId])
+    
+    const  handleCallAccepted=useCallback(({from, ans})=>{
+
+
+    },[])
 
    
     useEffect(()=>{
         console.log("Setting up event listener for user:joined");
         socket.on("user:joined", handleUSerJoined);
         socket.on('incoming:call',handleIncomingCall)
+        socket.on('call:accepted', handleCallAccepted)
 
         return ()=>{
             socket.off("user:joined", handleUSerJoined)
             socket.off("incoming:call", handleIncomingCall)
+            socket.off('call:accepted', handleCallAccepted)
         }
     }, [socket, handleUSerJoined])
 
